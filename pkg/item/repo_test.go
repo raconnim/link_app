@@ -93,7 +93,7 @@ func TestAddLink(t *testing.T) {
 
 	mock.
 		ExpectExec("INSERT INTO dbname").
-		WithArgs(longLink, shortLink).
+		WithArgs(shortLink, longLink).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	repo := NewItemRepository(db)
@@ -103,7 +103,7 @@ func TestAddLink(t *testing.T) {
 	}
 
 	currShortLink, err := repo.AddLink(longLink)
-	if err != nil || len(currShortLink) != 10  || currShortLink != shortLink{
+	if err != nil || len(currShortLink) != 10 || currShortLink != shortLink {
 		t.Errorf("unexpected err: %s", err)
 		return
 	}
@@ -112,7 +112,6 @@ func TestAddLink(t *testing.T) {
 		t.Errorf("there were unfulfilled expectations: %s", err)
 		return
 	}
-
 
 	// we have in db such row
 	rows := sqlmock.NewRows([]string{"short_link"})
@@ -210,8 +209,6 @@ func TestAddLinkError(t *testing.T) {
 		return
 	}
 
-
-
 	// insert error
 	mock.
 		ExpectQuery("SELECT short_link FROM dbname WHERE").
@@ -223,7 +220,7 @@ func TestAddLinkError(t *testing.T) {
 
 	mock.
 		ExpectExec("INSERT INTO dbname").
-		WithArgs(longLink, shortLink).WillReturnError(fmt.Errorf("db error"))
+		WithArgs(shortLink, longLink).WillReturnError(fmt.Errorf("db error"))
 
 	repo = NewItemRepository(db)
 
@@ -241,4 +238,3 @@ func TestAddLinkError(t *testing.T) {
 		return
 	}
 }
-

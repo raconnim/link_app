@@ -109,9 +109,8 @@ func NewItemRepository(db *sql.DB) *ItemRepostory <span class="cov8" title="1">{
         return &amp;ItemRepostory{DB: db}
 }</span>
 
-
 // search shortLink in db
-func(r *ItemRepostory) SearchLongLink(shortLink string) (string, error) <span class="cov8" title="1">{
+func (r *ItemRepostory) SearchLongLink(shortLink string) (string, error) <span class="cov8" title="1">{
         longLink := ""
 
         err := r.DB.QueryRow(`SELECT long_link FROM dbname WHERE short_link = $1`,
@@ -124,7 +123,7 @@ func(r *ItemRepostory) SearchLongLink(shortLink string) (string, error) <span cl
         <span class="cov8" title="1">return longLink, nil</span>
 }
 
-func (r *ItemRepostory) searchShortLink(longLink string) (string, error)<span class="cov8" title="1">{
+func (r *ItemRepostory) searchShortLink(longLink string) (string, error) <span class="cov8" title="1">{
         shortLink := ""
         err := r.DB.QueryRow(`SELECT short_link FROM dbname WHERE long_link = $1`, longLink).
                 Scan(&amp;shortLink)
@@ -135,7 +134,6 @@ func (r *ItemRepostory) searchShortLink(longLink string) (string, error)<span cl
         <span class="cov8" title="1">return shortLink, nil</span>
 }
 
-
 func (r *ItemRepostory) checkLink(longLink, shortLink string) error <span class="cov8" title="1">{
         currLink, err := r.SearchLongLink(shortLink)
         if err == sql.ErrNoRows || err == nil &amp;&amp; currLink == longLink </span><span class="cov8" title="1">{
@@ -145,14 +143,15 @@ func (r *ItemRepostory) checkLink(longLink, shortLink string) error <span class=
         <span class="cov8" title="1">return fmt.Errorf("link exist or error with db")</span>
 }
 
-func (r *ItemRepostory) addLinkInDB(longLink, shortLink string) error <span class="cov8" title="1">{
-        _, err := r.DB.Exec(`INSERT INTO dbname (shortLink, longLink) VALUES ($1, $2)`,
+func (r *ItemRepostory) addLinkInDB(shortLink, longLink string) error <span class="cov8" title="1">{
+        fmt.Println(shortLink, longLink)
+        _, err := r.DB.Exec(`INSERT INTO dbname (short_link, long_link) VALUES ($1, $2)`,
                 shortLink, longLink)
 
         return err
 }</span>
 
-func(r *ItemRepostory) AddLink(longLink string) (string, error) <span class="cov8" title="1">{
+func (r *ItemRepostory) AddLink(longLink string) (string, error) <span class="cov8" title="1">{
         shortLink, err := r.searchShortLink(longLink)
         if err == nil </span><span class="cov8" title="1">{
                 return shortLink, nil
