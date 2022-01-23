@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>handler: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">link_app/pkg/handler/error.go (100.0%)</option>
+				
+				<option value="file1">link_app/pkg/handler/item.go (100.0%)</option>
+				
+				<option value="file2">link_app/pkg/handler/item_mock.go (100.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package handler
+
+import (
+        "encoding/json"
+        "go.uber.org/zap"
+        "net/http"
+        "time"
+)
+
+type ErrorResponse struct {
+        Error string `json:"message,omitempty"`
+}
+
+func SendErrorHandler(w http.ResponseWriter, r *http.Request, err error, status int, logger *zap.SugaredLogger) <span class="cov8" title="1">{
+        logger.Errorw("SendErrorHandler",
+                "method", r.Method,
+                "remote_addr", r.RemoteAddr,
+                "url", r.URL.Path,
+                "time", time.Now(),
+                "err", err.Error())
+        resp := ErrorResponse{Error: err.Error()}
+
+        dataJSON, _ := json.Marshal(resp)
+        http.Error(w, string(dataJSON), status)
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package handler
+
+import (
+        "encoding/json"
+        "github.com/gorilla/mux"
+        "go.uber.org/zap"
+        "io/ioutil"
+        "link_app/pkg/item"
+        "net/http"
+)
+
+//go:generate mockgen -source=item.go -destination=item_mock.go -package=handler ItemRepositoryInterface
+type ItemRepositoryInterface interface {
+        SearchLongLink(shortLink string) (string, error)
+        AddLink(longLink string) (string, error)
+}
+
+
+type ItemHandler struct {
+        Logger   *zap.SugaredLogger
+        ItemRepo ItemRepositoryInterface
+}
+
+func SendDataHandler(w http.ResponseWriter, r *http.Request, data interface{}, logger *zap.SugaredLogger) <span class="cov8" title="1">{
+        dataJSON, _ := json.Marshal(data)
+        w.Header().Set("Content-type", "application/json")
+        w.Write(dataJSON)
+}</span>
+
+
+func (h *ItemHandler) CreateShortLink(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
+        b, err := ioutil.ReadAll(r.Body)
+        if err != nil </span><span class="cov8" title="1">{
+                SendErrorHandler(w, r, err,
+                        http.StatusBadRequest, h.Logger)
+                return
+        }</span>
+
+        <span class="cov8" title="1">currItem := &amp;item.Item{}
+        err = json.Unmarshal(b, &amp;currItem)
+        if err != nil </span><span class="cov8" title="1">{
+                SendErrorHandler(w, r, err,
+                        http.StatusBadRequest, h.Logger)
+                return
+        }</span>
+
+        <span class="cov8" title="1">shortLink, err := h.ItemRepo.AddLink(currItem.LongLink)
+        if err != nil </span><span class="cov8" title="1">{
+                SendErrorHandler(w, r, err,
+                        http.StatusInternalServerError, h.Logger)
+                return
+        }</span>
+
+        <span class="cov8" title="1">tmpLink := item.Item{ShortLink: shortLink}
+
+        SendDataHandler(w, r, tmpLink, h.Logger)</span>
+}
+
+
+func (h *ItemHandler) GetLongLink(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
+        vars := mux.Vars(r)
+        shortLink := vars["SHORT_LINK"]
+
+        longLink, err := h.ItemRepo.SearchLongLink(shortLink)
+        if err != nil </span><span class="cov8" title="1">{
+                SendErrorHandler(w, r, err,
+                        http.StatusInternalServerError, h.Logger)
+                return
+        }</span>
+
+        <span class="cov8" title="1">currLink := item.Item{LongLink: longLink}
+
+        SendDataHandler(w, r, currLink, h.Logger)</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">// Code generated by MockGen. DO NOT EDIT.
+// Source: item.go
+
+// Package handler is a generated GoMock package.
+package handler
+
+import (
+        reflect "reflect"
+
+        gomock "github.com/golang/mock/gomock"
+)
+
+// MockItemRepositoryInterface is a mock of ItemRepositoryInterface interface.
+type MockItemRepositoryInterface struct {
+        ctrl     *gomock.Controller
+        recorder *MockItemRepositoryInterfaceMockRecorder
+}
+
+// MockItemRepositoryInterfaceMockRecorder is the mock recorder for MockItemRepositoryInterface.
+type MockItemRepositoryInterfaceMockRecorder struct {
+        mock *MockItemRepositoryInterface
+}
+
+// NewMockItemRepositoryInterface creates a new mock instance.
+func NewMockItemRepositoryInterface(ctrl *gomock.Controller) *MockItemRepositoryInterface <span class="cov8" title="1">{
+        mock := &amp;MockItemRepositoryInterface{ctrl: ctrl}
+        mock.recorder = &amp;MockItemRepositoryInterfaceMockRecorder{mock}
+        return mock
+}</span>
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockItemRepositoryInterface) EXPECT() *MockItemRepositoryInterfaceMockRecorder <span class="cov8" title="1">{
+        return m.recorder
+}</span>
+
+// AddLink mocks base method.
+func (m *MockItemRepositoryInterface) AddLink(longLink string) (string, error) <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "AddLink", longLink)
+        ret0, _ := ret[0].(string)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// AddLink indicates an expected call of AddLink.
+func (mr *MockItemRepositoryInterfaceMockRecorder) AddLink(longLink interface{}) *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddLink", reflect.TypeOf((*MockItemRepositoryInterface)(nil).AddLink), longLink)
+}</span>
+
+// SearchLongLink mocks base method.
+func (m *MockItemRepositoryInterface) SearchLongLink(shortLink string) (string, error) <span class="cov8" title="1">{
+        m.ctrl.T.Helper()
+        ret := m.ctrl.Call(m, "SearchLongLink", shortLink)
+        ret0, _ := ret[0].(string)
+        ret1, _ := ret[1].(error)
+        return ret0, ret1
+}</span>
+
+// SearchLongLink indicates an expected call of SearchLongLink.
+func (mr *MockItemRepositoryInterfaceMockRecorder) SearchLongLink(shortLink interface{}) *gomock.Call <span class="cov8" title="1">{
+        mr.mock.ctrl.T.Helper()
+        return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchLongLink", reflect.TypeOf((*MockItemRepositoryInterface)(nil).SearchLongLink), shortLink)
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

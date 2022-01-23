@@ -1,0 +1,29 @@
+version: '3'
+
+# docker-compose up
+# docker rm $(docker ps -a -q) && docker volume prune -f
+
+services:
+  app:
+    build: ./
+    command: ./wait-for-postgres.sh db ./main
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    environment:
+      - DB_PASSWORD=qwerty123
+      - PG_USER=postgres
+      - PG_DB=postgres
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "qwerty123"
+    ports:
+      - '5432:5432'
+    volumes:
+      - './script/:/docker-entrypoint-initdb.d/'
+

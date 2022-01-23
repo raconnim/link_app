@@ -1,0 +1,19 @@
+mode: set
+link_app/pkg/handler/item_mock.go:25.91,29.2 3 1
+link_app/pkg/handler/item_mock.go:32.89,34.2 1 1
+link_app/pkg/handler/item_mock.go:37.80,43.2 5 1
+link_app/pkg/handler/item_mock.go:46.95,49.2 2 1
+link_app/pkg/handler/item_mock.go:52.88,58.2 5 1
+link_app/pkg/handler/item_mock.go:61.103,64.2 2 1
+link_app/pkg/handler/error.go:14.113,25.2 4 1
+link_app/pkg/handler/item.go:24.107,28.2 3 1
+link_app/pkg/handler/item.go:31.79,33.16 2 1
+link_app/pkg/handler/item.go:39.2,41.16 3 1
+link_app/pkg/handler/item.go:47.2,48.16 2 1
+link_app/pkg/handler/item.go:54.2,56.42 2 1
+link_app/pkg/handler/item.go:33.16,37.3 2 1
+link_app/pkg/handler/item.go:41.16,45.3 2 1
+link_app/pkg/handler/item.go:48.16,52.3 2 1
+link_app/pkg/handler/item.go:60.75,65.16 4 1
+link_app/pkg/handler/item.go:71.2,73.43 2 1
+link_app/pkg/handler/item.go:65.16,69.3 2 1
