@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS dbname(
+    short_link VARCHAR(10) PRIMARY KEY,
+    long_link VARCHAR(1000) NOT NULL
+)

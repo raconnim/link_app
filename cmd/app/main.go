@@ -45,7 +45,7 @@ func main() {
 			fmt.Println("no open bd:", err)
 			return
 		}
-		
+
 		repo = item.NewItemRepository(db)
 	}
 
