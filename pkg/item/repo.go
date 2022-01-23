@@ -13,9 +13,8 @@ func NewItemRepository(db *sql.DB) *ItemRepostory {
 	return &ItemRepostory{DB: db}
 }
 
-
 // search shortLink in db
-func(r *ItemRepostory) SearchLongLink(shortLink string) (string, error) {
+func (r *ItemRepostory) SearchLongLink(shortLink string) (string, error) {
 	longLink := ""
 
 	err := r.DB.QueryRow(`SELECT long_link FROM dbname WHERE short_link = $1`,
@@ -28,7 +27,7 @@ func(r *ItemRepostory) SearchLongLink(shortLink string) (string, error) {
 	return longLink, nil
 }
 
-func (r *ItemRepostory) searchShortLink(longLink string) (string, error){
+func (r *ItemRepostory) searchShortLink(longLink string) (string, error) {
 	shortLink := ""
 	err := r.DB.QueryRow(`SELECT short_link FROM dbname WHERE long_link = $1`, longLink).
 		Scan(&shortLink)
@@ -39,7 +38,6 @@ func (r *ItemRepostory) searchShortLink(longLink string) (string, error){
 	return shortLink, nil
 }
 
-
 func (r *ItemRepostory) checkLink(longLink, shortLink string) error {
 	currLink, err := r.SearchLongLink(shortLink)
 	if err == sql.ErrNoRows || err == nil && currLink == longLink {
@@ -49,14 +47,15 @@ func (r *ItemRepostory) checkLink(longLink, shortLink string) error {
 	return fmt.Errorf("link exist or error with db")
 }
 
-func (r *ItemRepostory) addLinkInDB(longLink, shortLink string) error {
-	_, err := r.DB.Exec(`INSERT INTO dbname (shortLink, longLink) VALUES ($1, $2)`,
+func (r *ItemRepostory) addLinkInDB(shortLink, longLink string) error {
+	fmt.Println(shortLink, longLink)
+	_, err := r.DB.Exec(`INSERT INTO dbname (short_link, long_link) VALUES ($1, $2)`,
 		shortLink, longLink)
 
 	return err
 }
 
-func(r *ItemRepostory) AddLink(longLink string) (string, error) {
+func (r *ItemRepostory) AddLink(longLink string) (string, error) {
 	shortLink, err := r.searchShortLink(longLink)
 	if err == nil {
 		return shortLink, nil

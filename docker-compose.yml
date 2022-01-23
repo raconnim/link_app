@@ -6,7 +6,7 @@ version: '3'
 services:
   app:
     build: ./
-    command: ./wait-for-postgres.sh db ./main
+    command: ./wait-for-postgres.sh db ./main -flag=postgres
     ports:
       - 8000:8000
     depends_on:
@@ -15,6 +15,12 @@ services:
       - DB_PASSWORD=qwerty123
       - PG_USER=postgres
       - PG_DB=postgres
+  app_in_memory:
+    build: ./
+    command: ./main -flag=memory
+    ports:
+      - 8000:8000
+
   db:
     image: postgres:latest
     restart: always

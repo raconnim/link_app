@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
+	_ "github.com/lib/pq"
 	"go.uber.org/zap"
 	"link_app/pkg/handler"
 	"link_app/pkg/item"
@@ -15,8 +16,11 @@ import (
 )
 
 func main() {
+
 	dbflag := "" // "postgres" or "memory"
-	flag.StringVar(&dbflag, "db", "memory", "The name of database")
+	flag.StringVar(&dbflag, "flag", "memory", "The name of database")
+	flag.Parse()
+	log.Println(")))))))))", dbflag)
 	if dbflag != "postgres" && dbflag != "memory" {
 		log.Println("неверный флаг")
 	}
@@ -59,7 +63,7 @@ func main() {
 
 	mux := middleware.AccessLog(logger, r)
 
-	addr := ":8080"
+	addr := ":8000"
 	logger.Infow("starting server",
 		"type", "START",
 		"addr", addr,

@@ -16,4 +16,4 @@ RUN chmod +x wait-for-postgres.sh
 RUN go mod download
 RUN go build -o main ./cmd/app/main.go
 
-CMD ["./main -db postgres"]
+CMD ["./main -dbflag postgres"]
