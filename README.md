@@ -1,12 +1,13 @@
-#Запуск
+Запуск
 
 ```
 make run_in_mem //для запуска in-memory решения
 make run_in_db //для запуска с использованием postgresql
 ```
 
-#Метод Post, который будет сохранять оригинальный URL в базе и возвращать сокращённый
-##Запрос
+Метод Post, который будет сохранять оригинальный URL в базе и возвращать сокращённый
+
+Запрос
 ```
 curl --header "Content-Type: application/json" \
 --request POST \
@@ -14,8 +15,9 @@ curl --header "Content-Type: application/json" \
   http://localhost:8080/add/
 ```
 
-#Метод Get, который будет принимать сокращённый URL и возвращать оригинальный URL
-##Запрос
+Метод Get, который будет принимать сокращённый URL и возвращать оригинальный URL
+
+Запрос
 ```
 curl --header "Content-Type: application/json" \
 --request GET \
