@@ -14,6 +14,9 @@ curl --header "Content-Type: application/json" \
 --data '{"long_link": "https://gitlab.com/"}' \
   http://localhost:8080/add/
 ```
+Ответ: ```{"short_link":"RiWMsVFzEX"}```
+
+В случае ошибки выдает код ошибки и сообщение об ошибки ```{"message":"no such short link"}```
 
 Метод Get, который будет принимать сокращённый URL и возвращать оригинальный URL
 
@@ -24,3 +27,7 @@ curl --header "Content-Type: application/json" \
   http://localhost:8080/link/{SHORT_LINK}
 ```
 где вместо ```{SHORT_LINK}``` нужно подставить сокращенный URL
+
+Ответ: ```{"long_link":"https://gitlab.com"}```
+
+В случае ошибки выдает код ошибки и сообщение об ошибки ```{"message":"no such short link"}```
