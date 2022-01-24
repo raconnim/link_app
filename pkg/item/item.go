@@ -1,6 +1,9 @@
 package item
 
-import "math/rand"
+import (
+	"math/rand"
+	"time"
+)
 
 // change name
 type Item struct {
@@ -9,9 +12,11 @@ type Item struct {
 }
 
 const letter = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"
-var GenerateShortLink = func () string {
+
+var GenerateShortLink = func() string {
 	shortLink := make([]rune, 10)
 	letterRunes := []rune(letter)
+	rand.Seed(time.Now().UnixNano())
 	for i := range shortLink {
 		shortLink[i] = letterRunes[rand.Intn(len(letterRunes))]
 	}
